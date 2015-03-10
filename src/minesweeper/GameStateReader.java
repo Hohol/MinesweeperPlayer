@@ -16,6 +16,9 @@ public class GameStateReader {
     private static final int TWO_COLOR = new Color(0, 123, 0).getRGB();
     private static final int THREE_COLOR = new Color(255, 0, 0).getRGB();
     private static final int FOUR_COLOR = new Color(0, 0, 123).getRGB();
+    public static final int X_SHIFT = 1960;
+    public static final int Y_SHIFT = 202;
+    public static final int CELL_SIZE = 32;
 
     private final Robot robot;
 
@@ -28,19 +31,18 @@ public class GameStateReader {
     }
 
     public Board readGameState() {
-        int cellSize = 32;
         int height = 16;
         int width = 30;
 
-        BufferedImage img = robot.createScreenCapture(new Rectangle(1960, 202, width * cellSize, height * cellSize));
+        BufferedImage img = robot.createScreenCapture(new Rectangle(X_SHIFT, Y_SHIFT, width * CELL_SIZE, height * CELL_SIZE));
 
         //int height = 9;
         //int width = 9;
         Board board = new Board(10, height, width);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                int x = i * cellSize;
-                int y = j * cellSize;
+                int x = i * CELL_SIZE;
+                int y = j * CELL_SIZE;
                 int xx = x + 18;
                 int yy = y + 8;
                 int color = img.getRGB(xx, yy);

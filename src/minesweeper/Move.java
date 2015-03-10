@@ -1,9 +1,9 @@
 package minesweeper;
 
 public class Move {
-    private final int row;
-    private final int col;
-    private final MoveType moveType;
+    public final int row;
+    public final int col;
+    public final MoveType moveType;
 
     public Move(int row, int col, MoveType moveType) {
         this.row = row;
