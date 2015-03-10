@@ -14,7 +14,7 @@ public class Player {
             }
             Move move = bestMoveFinder.findBestMove(board);
             moveMaker.makeMove(move);
-            Thread.sleep(2000);
+            //Thread.sleep(300);
         }
     }
 }
