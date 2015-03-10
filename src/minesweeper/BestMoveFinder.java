@@ -82,7 +82,11 @@ public class BestMoveFinder {
     }
 
     private double getProbability(Board board, Cell numberCell) {
-        return board.get(numberCell) / (double) board.getNeighbours(numberCell).stream().filter(cell -> board.get(cell) == UNKNOWN).count();
+        List<Cell> neighbours = board.getNeighbours(numberCell);
+        long unknownCnt = neighbours.stream().filter(cell -> board.get(cell) == UNKNOWN).count();
+        long flagCnt = neighbours.stream().filter(cell -> board.get(cell) == FLAG).count();
+        long hiddenBombs = board.get(numberCell) - flagCnt;
+        return hiddenBombs / (double) unknownCnt;
     }
 
     private int getUnknownCnt(Board board) {
