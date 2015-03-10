@@ -8,7 +8,7 @@ public class Player {
 
         while (true) {
             Board board = gameStateReader.readGameState();
-            System.out.println(board);
+            //System.out.println(board);
             if (board == null) {
                 break;
             }

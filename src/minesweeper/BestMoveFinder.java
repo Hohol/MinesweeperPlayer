@@ -18,12 +18,21 @@ public class BestMoveFinder {
     }
 
     private Move getSureMove(Board board) {
+        int maxSize = 0;
+        Position bestPos = null;
         for (int i = 0; i < board.getHeight(); i++) {
             for (int j = 0; j < board.getWidth(); j++) {
-                if (board.get(i,j) > 0 && !board.getUnknownNeighbours(i, j).isEmpty() && board.getFlagNeighbours(i, j).size() == board.get(i, j)) {
-                    return new Move(i, j, BOTH);
+                List<Position> unknownNeighbours = board.getUnknownNeighbours(i, j);
+                if (board.get(i, j) > 0 && !unknownNeighbours.isEmpty() && board.getFlagNeighbours(i, j).size() == board.get(i, j)) {
+                    if (unknownNeighbours.size() > maxSize) {
+                        maxSize = unknownNeighbours.size();
+                        bestPos = new Position(i, j);
+                    }
                 }
             }
+        }
+        if (bestPos != null) {
+            return new Move(bestPos, Move.MoveType.BOTH);
         }
         for (int i = 0; i < board.getHeight(); i++) {
             for (int j = 0; j < board.getWidth(); j++) {
