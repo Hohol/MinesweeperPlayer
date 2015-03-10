@@ -74,7 +74,7 @@ public class GameStateReader {
             }
         }
 
-        writeImage(img);
+        //writeImage(img);
         return board;
     }
 

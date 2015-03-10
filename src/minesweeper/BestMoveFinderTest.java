@@ -2,8 +2,7 @@ package minesweeper;
 
 import org.testng.annotations.Test;
 
-import static minesweeper.Move.MoveType.MARK_BOMB;
-import static minesweeper.Move.MoveType.OPEN;
+import static minesweeper.Move.MoveType.*;
 import static org.testng.Assert.assertEquals;
 
 @Test
@@ -25,7 +24,7 @@ public class BestMoveFinderTest {
                 1,
                 "?1x"
         );
-        check(board, new Move(0, 0, OPEN));
+        check(board, new Move(0, 1, BOTH));
     }
 
     @Test

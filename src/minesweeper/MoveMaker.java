@@ -2,6 +2,9 @@ package minesweeper;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static minesweeper.GameStateReader.*;
 import static minesweeper.Move.MoveType.*;
@@ -21,20 +24,23 @@ public class MoveMaker {
         robot.mouseMove(X_SHIFT + move.col * CELL_SIZE + CELL_SIZE / 2, Y_SHIFT + move.row * CELL_SIZE + CELL_SIZE / 2);
         if (move.moveType == OPEN) {
             System.out.println("open");
-            click(InputEvent.BUTTON1_DOWN_MASK);
-        } else {
+            click(Collections.singletonList(InputEvent.BUTTON1_DOWN_MASK));
+        } else if (move.moveType == MARK_BOMB) {
             System.out.println("flag");
-            click(InputEvent.BUTTON3_DOWN_MASK);
+            click(Collections.singletonList(InputEvent.BUTTON3_DOWN_MASK));
+        } else {
+            System.out.println("both");
+            click(Arrays.asList(InputEvent.BUTTON1_DOWN_MASK, InputEvent.BUTTON3_DOWN_MASK));
         }
     }
 
-    private void click(int button) {
-        robot.mousePress(button);
+    private void click(List<Integer> buttons) {
+        buttons.forEach(robot::mousePress);
         try {
             Thread.sleep(40);
         } catch (InterruptedException e) {
             throw new RuntimeException();
         }
-        robot.mouseRelease(button);
+        buttons.forEach(robot::mouseRelease);
     }
 }

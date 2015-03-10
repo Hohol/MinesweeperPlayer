@@ -16,7 +16,7 @@ public class Move {
     }
 
     public static enum MoveType {
-        MARK_BOMB, OPEN
+        MARK_BOMB, BOTH, OPEN
     }
 
     @Override

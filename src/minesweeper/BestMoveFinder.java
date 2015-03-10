@@ -20,6 +20,13 @@ public class BestMoveFinder {
     private Move getSureMove(Board board) {
         for (int i = 0; i < board.getHeight(); i++) {
             for (int j = 0; j < board.getWidth(); j++) {
+                if (board.get(i,j) > 0 && !board.getUnknownNeighbours(i, j).isEmpty() && board.getFlagNeighbours(i, j).size() == board.get(i, j)) {
+                    return new Move(i, j, BOTH);
+                }
+            }
+        }
+        for (int i = 0; i < board.getHeight(); i++) {
+            for (int j = 0; j < board.getWidth(); j++) {
                 int unknownBombCnt = board.get(i, j);
                 if (unknownBombCnt <= 0) {
                     continue;
