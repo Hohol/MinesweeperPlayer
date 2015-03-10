@@ -39,7 +39,7 @@ public class GameStateReader {
 
         //int height = 9;
         //int width = 9;
-        Board board = new Board(10, height, width);
+        Board board = new Board(99, height, width);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 int x = i * CELL_SIZE;

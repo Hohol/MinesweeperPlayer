@@ -31,7 +31,7 @@ public class MoveMaker {
     private void click(int button) {
         robot.mousePress(button);
         try {
-            Thread.sleep(100);
+            Thread.sleep(40);
         } catch (InterruptedException e) {
             throw new RuntimeException();
         }

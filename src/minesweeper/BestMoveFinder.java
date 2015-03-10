@@ -104,6 +104,7 @@ public class BestMoveFinder {
     }
 
     private Move getProbabilisticMove(Board board) {
+        System.out.println("trying to find probabilistic move!");
         double minProbability = 1;
         Position bestPosition = null;
         for (int i = 0; i < board.getHeight(); i++) {
