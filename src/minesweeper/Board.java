@@ -6,11 +6,11 @@ import java.util.List;
 public class Board {
     public static final int EMPTY = 0;
     public static final int UNKNOWN = -1;
-    public static final int BOMB = -2;
+    public static final int FLAG = -2;
 
     public static final char EMPTY_CHAR = '.';
     public static final char UNKNOWN_CHAR = '?';
-    public static final char BOMB_CHAR = 'x';
+    public static final char FLAG_CHAR = 'x';
 
     private final int[][] b;
     private final int bombCnt;
@@ -27,14 +27,39 @@ public class Board {
                     val = EMPTY;
                 } else if (ch == UNKNOWN_CHAR) {
                     val = UNKNOWN;
-                } else if (ch == BOMB_CHAR) {
-                    val = BOMB;
+                } else if (ch == FLAG_CHAR) {
+                    val = FLAG;
                 } else {
                     val = Integer.parseInt("" + ch);
                 }
                 b[i][j] = val;
             }
         }
+    }
+
+    public Board(int bombCnt, int height, int width) {
+        this.bombCnt = bombCnt;
+        b = new int[height][width];
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int[] line : b) {
+            for (int val : line) {
+                if (val == UNKNOWN) {
+                    sb.append(UNKNOWN_CHAR);
+                } else if (val == FLAG) {
+                    sb.append(FLAG_CHAR);
+                } else if (val == EMPTY) {
+                    sb.append(EMPTY_CHAR);
+                } else {
+                    sb.append(val);
+                }
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 
     public int getHeight() {
@@ -76,5 +101,9 @@ public class Board {
 
     public List<Cell> getNeighbours(Cell cell) {
         return getNeighbours(cell.row, cell.col);
+    }
+
+    public void set(int row, int col, int val) {
+        b[row][col] = val;
     }
 }

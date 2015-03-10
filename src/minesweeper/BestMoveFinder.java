@@ -28,7 +28,7 @@ public class BestMoveFinder {
                 for (Cell cell : neighbours) {
                     if (board.get(cell) == UNKNOWN) {
                         unknownNeighboursCnt++;
-                    } else if (board.get(cell) == BOMB) {
+                    } else if (board.get(cell) == FLAG) {
                         unknownBombCnt--;
                     }
                 }
@@ -90,7 +90,7 @@ public class BestMoveFinder {
     }
 
     private int getHiddenBombCnt(Board board) {
-        return board.getBombCnt() - getCount(board, BOMB);
+        return board.getBombCnt() - getCount(board, FLAG);
     }
 
     private int getCount(Board board, int value) {
