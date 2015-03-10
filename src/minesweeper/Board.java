@@ -2,6 +2,7 @@ package minesweeper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class Board {
     public static final int EMPTY = 0;
@@ -74,7 +75,7 @@ public class Board {
         return b[row][col];
     }
 
-    public int get(Cell cell) {
+    public int get(Position cell) {
         return get(cell.row, cell.col);
     }
 
@@ -82,8 +83,24 @@ public class Board {
         return bombCnt;
     }
 
-    public List<Cell> getNeighbours(int row, int col) {
-        List<Cell> r = new ArrayList<>();
+    public List<Position> getNeighbours(int row, int col) {
+        return getNeighbours(row, col, v -> true);
+    }
+
+    public List<Position> getFlagNeighbours(int row, int col) {
+        return getNeighbours(row, col, v -> v == FLAG);
+    }
+
+    public List<Position> getUnknownNeighbours(int row, int col) {
+        return getNeighbours(row, col, v -> v == UNKNOWN);
+    }
+
+    public List<Position> getNumberNeighbours(int row, int col) {
+        return getNeighbours(row, col, v -> v > 0);
+    }
+
+    private List<Position> getNeighbours(int row, int col, Function<Integer, Boolean> filter) {
+        List<Position> r = new ArrayList<>();
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
                 if (dx == 0 && dy == 0) {
@@ -91,19 +108,31 @@ public class Board {
                 }
                 int toX = row + dx;
                 int toY = col + dy;
-                if (toX >= 0 && toX < getHeight() && toY >= 0 && toY < getWidth()) {
-                    r.add(new Cell(toX, toY));
+                if (toX >= 0 && toX < getHeight() && toY >= 0 && toY < getWidth() && filter.apply(b[toX][toY])) {
+                    r.add(new Position(toX, toY));
                 }
             }
         }
         return r;
     }
 
-    public List<Cell> getNeighbours(Cell cell) {
-        return getNeighbours(cell.row, cell.col);
+    public List<Position> getNeighbours(Position pos) {
+        return getNeighbours(pos.row, pos.col);
     }
 
     public void set(int row, int col, int val) {
         b[row][col] = val;
+    }
+
+    public List<Position> getFlagNeighbours(Position pos) {
+        return getFlagNeighbours(pos.row, pos.col);
+    }
+
+    public List<Position> getUnknownNeighbours(Position pos) {
+        return getUnknownNeighbours(pos.row, pos.col);
+    }
+
+    public List<Position> getNumberNeighbours(Position pos) {
+        return getNumberNeighbours(pos.row, pos.col);
     }
 }

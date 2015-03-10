@@ -11,7 +11,7 @@ public class Move {
         this.moveType = moveType;
     }
 
-    public Move(Cell cell, MoveType moveType) {
+    public Move(Position cell, MoveType moveType) {
         this(cell.row, cell.col, moveType);
     }
 

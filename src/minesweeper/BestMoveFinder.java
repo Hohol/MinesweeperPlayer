@@ -1,5 +1,6 @@
 package minesweeper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,9 +24,9 @@ public class BestMoveFinder {
                 if (unknownBombCnt <= 0) {
                     continue;
                 }
-                List<Cell> neighbours = board.getNeighbours(i, j);
+                List<Position> neighbours = board.getNeighbours(i, j);
                 int unknownNeighboursCnt = 0;
-                for (Cell cell : neighbours) {
+                for (Position cell : neighbours) {
                     if (board.get(cell) == UNKNOWN) {
                         unknownNeighboursCnt++;
                     } else if (board.get(cell) == FLAG) {
@@ -36,7 +37,7 @@ public class BestMoveFinder {
                     continue;
                 }
 
-                Cell unknownCell = find(neighbours, board, UNKNOWN);
+                Position unknownCell = find(neighbours, board, UNKNOWN);
                 if (unknownNeighboursCnt == unknownBombCnt) {
                     return new Move(unknownCell, MARK_BOMB);
                 }
@@ -45,12 +46,66 @@ public class BestMoveFinder {
                 }
             }
         }
+
+        for (int i = 0; i < board.getHeight(); i++) {
+            for (int j = 0; j < board.getWidth(); j++) {
+                if (board.get(i, j) == UNKNOWN && !board.getNumberNeighbours(i, j).isEmpty()) {
+                    board.set(i, j, EMPTY);
+                    boolean canBeEmpty = !contradictory(board, i, j);
+                    board.set(i, j, FLAG);
+                    boolean canBeBomb = !contradictory(board, i, j);
+                    board.set(i, j, UNKNOWN);
+                    if (canBeEmpty && !canBeBomb) {
+                        return new Move(i, j, OPEN);
+                    } else if (canBeBomb && !canBeEmpty) {
+                        return new Move(i, j, MARK_BOMB);
+                    }
+                }
+            }
+        }
         return null;
+    }
+
+    private boolean contradictory(Board board, int row, int col) {
+        for (Position pos1 : board.getNumberNeighbours(row, col)) {
+            int hiddenBombs1 = board.get(pos1) - board.getFlagNeighbours(pos1).size();
+            List<Position> unknowns1 = board.getUnknownNeighbours(pos1);
+            for (Position pos2 : board.getNumberNeighbours(pos1)) {
+                int hiddenBombs2 = board.get(pos2) - board.getFlagNeighbours(pos2).size();
+                List<Position> unknowns2 = board.getUnknownNeighbours(pos2);
+                List<Position> intersection = new ArrayList<>(unknowns2);
+                intersection.retainAll(unknowns1);
+                int intSize = intersection.size();
+                if (contradictory(unknowns1.size() - intSize, unknowns2.size() - intSize, hiddenBombs1, hiddenBombs2, intSize)) {
+                    contradictory(unknowns1.size() - intSize, unknowns2.size() - intSize, hiddenBombs1, hiddenBombs2, intSize);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean contradictory(int size1, int size2, int bombs1, int bombs2, int intersectionSize) {
+        int maxBombsInIntersection = Math.min(intersectionSize, Math.max(bombs1, bombs2));
+        int minBombsInIntersection = Math.max(0, Math.max(bombs1 - size1, bombs2 - size2));
+        if (size1 + maxBombsInIntersection < bombs1) {
+            return true;
+        }
+        if (size2 + maxBombsInIntersection < bombs2) {
+            return true;
+        }
+        if (bombs1 < minBombsInIntersection) {
+            return true;
+        }
+        if (bombs2 < minBombsInIntersection) {
+            return true;
+        }
+        return false;
     }
 
     private Move getProbabilisticMove(Board board) {
         double minProbability = 1;
-        Cell bestCell = null;
+        Position bestPosition = null;
         for (int i = 0; i < board.getHeight(); i++) {
             for (int j = 0; j < board.getWidth(); j++) {
                 if (board.get(i, j) == UNKNOWN) {
@@ -60,29 +115,29 @@ public class BestMoveFinder {
                     }
                     if (p < minProbability) {
                         minProbability = p;
-                        bestCell = new Cell(i, j);
+                        bestPosition = new Position(i, j);
                     }
                 }
             }
         }
-        return new Move(bestCell, OPEN);
+        return new Move(bestPosition, OPEN);
     }
 
     private double getBombProbability(Board board, int row, int col) {
-        List<Cell> numberCells = board.getNeighbours(row, col).stream().filter(cell -> board.get(cell) > 0).collect(Collectors.toList());
+        List<Position> numberCells = board.getNeighbours(row, col).stream().filter(cell -> board.get(cell) > 0).collect(Collectors.toList());
         if (numberCells.isEmpty()) {
             return getHiddenBombCnt(board) / (double) getUnknownCnt(board);
         } else {
             double maxP = 0;
-            for (Cell numberCell : numberCells) {
+            for (Position numberCell : numberCells) {
                 maxP = Math.max(maxP, getProbability(board, numberCell));
             }
             return maxP;
         }
     }
 
-    private double getProbability(Board board, Cell numberCell) {
-        List<Cell> neighbours = board.getNeighbours(numberCell);
+    private double getProbability(Board board, Position numberCell) {
+        List<Position> neighbours = board.getNeighbours(numberCell);
         long unknownCnt = neighbours.stream().filter(cell -> board.get(cell) == UNKNOWN).count();
         long flagCnt = neighbours.stream().filter(cell -> board.get(cell) == FLAG).count();
         long hiddenBombs = board.get(numberCell) - flagCnt;
@@ -109,8 +164,8 @@ public class BestMoveFinder {
         return cnt;
     }
 
-    private Cell find(List<Cell> neighbours, Board board, int value) {
-        for (Cell cell : neighbours) {
+    private Position find(List<Position> neighbours, Board board, int value) {
+        for (Position cell : neighbours) {
             if (board.get(cell) == value) {
                 return cell;
             }
