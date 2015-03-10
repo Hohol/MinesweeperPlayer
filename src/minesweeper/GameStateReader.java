@@ -17,6 +17,7 @@ public class GameStateReader {
     private static final int THREE_COLOR = new Color(255, 0, 0).getRGB();
     private static final int FOUR_COLOR = new Color(0, 0, 123).getRGB();
     private static final int FIVE_COLOR = new Color(123, 0, 0).getRGB();
+    private static final int SIX_COLOR = new Color(0, 123, 123).getRGB();
     public static final int X_SHIFT = 1960;
     public static final int Y_SHIFT = 202;
     public static final int CELL_SIZE = 32;
@@ -58,6 +59,8 @@ public class GameStateReader {
                     val = 4;
                 } else if (color == FIVE_COLOR) {
                     val = 5;
+                } else if (color == SIX_COLOR) {
+                    val = 6;
                 } else if (color == Color.BLACK.getRGB()) { // BABAX
                     return null;
                 } else if (img.getRGB(x + 20, y + 23) == Color.BLACK.getRGB()) {
