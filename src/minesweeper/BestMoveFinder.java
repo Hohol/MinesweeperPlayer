@@ -93,7 +93,6 @@ public class BestMoveFinder {
                 intersection.retainAll(unknowns1);
                 int intSize = intersection.size();
                 if (contradictory(unknowns1.size() - intSize, unknowns2.size() - intSize, hiddenBombs1, hiddenBombs2, intSize)) {
-                    contradictory(unknowns1.size() - intSize, unknowns2.size() - intSize, hiddenBombs1, hiddenBombs2, intSize);
                     return true;
                 }
             }
